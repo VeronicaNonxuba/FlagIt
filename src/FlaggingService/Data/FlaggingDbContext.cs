@@ -3,12 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlaggingService.Data;
 
-public class FlaggingDbContext : DbContext
+public class FlaggingDbContext(DbContextOptions options) : DbContext(options)
 {
-    public FlaggingDbContext(DbContextOptions<FlaggingDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<EstablishmentType> EstablishmentType { get; set; }
     public DbSet<Establishment> Establishments { get; set; }
     public DbSet<Flag> Flags { get; set; }
@@ -17,6 +13,8 @@ public class FlaggingDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Flagging>().HasKey(u => new { u.FlagId, u.FlaggedBy, u.EstablishmentId });
         modelBuilder.Entity<Flagging>()
                     .HasOne(z => z.Establishment).WithMany(z => z.Flagging).HasForeignKey(z => z.EstablishmentId);
