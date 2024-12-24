@@ -1,4 +1,5 @@
 
+using System.Drawing;
 using FlaggingService.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,7 +86,7 @@ public class DbInitializer
                Id = Guid.Parse("efe24fe5-b6e4-45e6-917a-73125daa58df"),
                CreatedOn = DateTime.UtcNow.AddDays(-2),
                Address = "900 Koedoeber road",
-               ContactId = 0,
+               ContactIds = null,
                Name = "Forest Manor",
                Owner = "Macprop",
                Status = Status.Active,
@@ -96,7 +97,7 @@ public class DbInitializer
                Id = Guid.Parse("82f64570-8944-411a-861f-4503669d5d76"),
                CreatedOn = DateTime.UtcNow.AddDays(-2),
                Address = "900 Koedoeber road",
-               ContactId = 0,
+               ContactIds = null,
                Name = "Forest Manor",
                Owner = "Macprop",
                Status = Status.Active,
@@ -139,7 +140,7 @@ public class DbInitializer
             new Flag
             {
                Id = Guid.Parse("3efb5209-a1f3-460b-bbad-3d1e024e6be1"),
-               Color = "Green",
+               Color = Color.Green.ToString(),
                CreatedOn = DateTime.UtcNow.AddDays(2),
                Description = "Okay and good vibes",
                 Significance = Significance.Okay
@@ -147,7 +148,7 @@ public class DbInitializer
             new Flag
             {
                Id = Guid.Parse("c90fa4f3-b358-44df-8d32-3e31126d38de"),
-               Color = "Gold",
+               Color = Color.Gold.ToString(),
                CreatedOn = DateTime.UtcNow.AddDays(5),
                Description = "This place is perfect and checks all the boxes",
                 Significance = Significance.PlaceToBe
@@ -155,7 +156,7 @@ public class DbInitializer
             new Flag
             {
                Id = Guid.Parse("5262cae3-7e8c-4408-a876-7efac5cbe2d8"),
-               Color = "Red",
+               Color = Color.Red.ToString(),
                CreatedOn = DateTime.UtcNow.AddDays(10),
                Description = "Everything is bad, not recomended at all",
                 Significance = Significance.Boring
@@ -163,7 +164,7 @@ public class DbInitializer
             new Flag
             {
                Id = Guid.Parse("af20d2b8-dc34-467a-af7b-bcf2c3881bc2"),
-               Color = "Yellow",
+               Color = Color.Yellow.ToString(),
                CreatedOn = DateTime.UtcNow.AddDays(1),
                Description = "Nothing Wow! But it's bearable!",
                 Significance = Significance.Average
@@ -184,7 +185,6 @@ public class DbInitializer
                FlagId = Guid.Parse("3efb5209-a1f3-460b-bbad-3d1e024e6be1"),
                EstablishmentId = Guid.Parse("efe24fe5-b6e4-45e6-917a-73125daa58df"),
                FlaggedBy = Guid.Parse("2c912e86-72a0-4718-aa41-128ac771d954"),
-               FlagCount = 2,
                FlaggedOn = DateTime.UtcNow.AddDays(2),
                Comments = "Initial data from seed..."
             }

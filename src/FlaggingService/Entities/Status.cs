@@ -5,5 +5,6 @@ public enum Status
     Active,
     InActive,
     Abandoned,
-    Closed
+    Closed,
+    Pending
 }

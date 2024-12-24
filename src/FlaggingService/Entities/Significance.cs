@@ -7,5 +7,8 @@ public enum Significance
     Boring,
     PlaceToBe,
     Average,
-    Okay
+    Okay,
+    Important,
+    Urgent
+
 }

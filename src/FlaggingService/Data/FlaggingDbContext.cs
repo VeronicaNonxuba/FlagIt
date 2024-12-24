@@ -13,15 +13,31 @@ public class FlaggingDbContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Flagging>()
+            .HasKey(flagging => new { flagging.FlagId, flagging.EstablishmentId, flagging.FlaggedBy });
+        modelBuilder.Entity<Flagging>()
+            .HasIndex(flagging => new { flagging.FlagId, flagging.EstablishmentId, flagging.FlaggedBy });
+        modelBuilder.Entity<Flagging>()
+            .HasOne(f => f.Flagger)
+            .WithMany(flagger => flagger.Flagging)
+            .HasForeignKey(f => f.FlaggedBy)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Flagging>().HasKey(u => new { u.FlagId, u.FlaggedBy, u.EstablishmentId });
         modelBuilder.Entity<Flagging>()
-                    .HasOne(z => z.Establishment).WithMany(z => z.Flagging).HasForeignKey(z => z.EstablishmentId);
+            .HasOne(f => f.Establishment)
+            .WithMany(e => e.Flagging)
+            .HasForeignKey(f => f.EstablishmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Flagging>()
-                    .HasOne(z => z.Flag).WithMany(z => z.Flagging).HasForeignKey(z => z.FlagId);
-        modelBuilder.Entity<Flagging>()
-                    .HasOne(z => z.Flagger).WithMany(z => z.Flagging).HasForeignKey(z => z.FlaggedBy);
+            .HasOne(f => f.Flag)
+            .WithMany(flag => flag.Flagging)
+            .HasForeignKey(f => f.FlagId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Establishment>()
+            .HasIndex(e => e.Name)
+            .IsUnique();
     }
 
 }

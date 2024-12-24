@@ -15,6 +15,10 @@ public class Flag
     public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
     public string? Description { get; set; }
     public Significance Significance { get; set; } = Significance.Okay;
+    public string? CreatedBy { get; set; } = string.Empty;
+    public string? ModifiedBy { get; set; } = string.Empty;
+    public DateTime? ModifiedOn { get; set; } = DateTime.UtcNow;
+    public bool IsDeleted { get; set; } = false;
 
     //nav props
     public ICollection<Flagging>? Flagging { get; set; }
