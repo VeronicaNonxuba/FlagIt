@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlaggingService.Data.Migrations
 {
     [DbContext(typeof(FlaggingDbContext))]
-    [Migration("20241224135746_AddedAuditProperties")]
-    partial class AddedAuditProperties
+    [Migration("20241226085424_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

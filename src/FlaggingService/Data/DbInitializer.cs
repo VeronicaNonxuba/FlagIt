@@ -96,10 +96,10 @@ public class DbInitializer
             {
                Id = Guid.Parse("82f64570-8944-411a-861f-4503669d5d76"),
                CreatedOn = DateTime.UtcNow.AddDays(-2),
-               Address = "900 Koedoeber road",
+               Address = "300 Koedoeber road",
                ContactIds = null,
-               Name = "Forest Manor",
-               Owner = "Macprop",
+               Name = "Forest Manor tES",
+               Owner = "Macprop5",
                Status = Status.Active,
                TypeId = Guid.Parse("8c76781d-0318-4b82-98f6-9afeecb8ec8f")
             }
