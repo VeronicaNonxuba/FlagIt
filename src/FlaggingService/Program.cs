@@ -1,5 +1,5 @@
+
 using FlaggingService.Data;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,7 @@ builder.Services.AddDbContext<FlaggingDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IFlaggingRepository, FlaggingRepository>();
 
 var app = builder.Build();
 
@@ -27,4 +28,5 @@ catch (Exception e)
 {
     Console.WriteLine(e);
 }
+
 app.Run();

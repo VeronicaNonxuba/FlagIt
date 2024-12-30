@@ -1,8 +1,5 @@
 
 using System.Drawing;
-using FlaggingService.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace FlaggingService.Data;
 
 public class DbInitializer
