@@ -1,6 +1,7 @@
 using AutoMapper;
 using MongoDB.Entities;
 using SearchService.Models;
+using SearchService.RequestHelpers;
 
 namespace SearchService.Data;
 
@@ -11,21 +12,59 @@ public class SearchRepository : ISearchRepository
     {
         _mapper = mapper;
     }
-    public async Task<QueryResponse> SearchItems(string searchTerm,
-    int pageSize = 3, int pageNumber = 1)
+    public async Task<QueryResponse> SearchItems(SearchParams searchParams)
     {
         QueryResponse result = new QueryResponse();
         try
         {
-            var query = DB.PagedSearch<Rating>();
-            query.Sort(x => x.Ascending(x => x.EstablishmentName));
+            var query = DB.PagedSearch<Rating, Rating>();
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            //CustomizeQuery(searchParams, ref query);
+
+            if (!string.IsNullOrEmpty(searchParams.searchTerm))
             {
-                query.Match(Search.Full, searchTerm).SortByTextScore();
+                query.Match(Search.Full, searchParams.searchTerm).SortByTextScore();
             }
-            query.PageNumber(pageNumber);
-            query.PageSize(pageSize);
+
+            query = searchParams.OrderBy switch
+            {
+                "EstablishmentName" => query.Sort(x => x.Ascending(x => x.EstablishmentName)),
+                "Username" => query.Sort(x => x.Ascending(x => x.Username)),
+                "EstablishmentTypeName" => query.Sort(x => x.Ascending(x => x.EstablishmentTypeName)),
+                _ => query.Sort(x => x.Ascending(x => x.FlaggedOn))
+            };
+
+            query = searchParams.FilterBy switch
+            {
+                "Color" => query.Match(x => x.Color == "Yellow"),
+                "LimitResult" => query.Match(x => x.FlaggedOn > DateTime.UtcNow.AddDays(-7)),
+                _ => query.Match(x => x.FlaggedOn < DateTime.UtcNow)
+            };
+
+            if (!string.IsNullOrEmpty(searchParams.Username))
+            {
+                query.Match(x => x.Username == searchParams.Username);
+            }
+
+            if (!string.IsNullOrEmpty(searchParams.EstablishmentName))
+            {
+                query.Match(x => x.EstablishmentName == searchParams.EstablishmentName);
+            }
+
+            if (!string.IsNullOrEmpty(searchParams.EstablishmentTypeName))
+            {
+                query.Match(x => x.EstablishmentTypeName == searchParams.EstablishmentTypeName);
+            }
+
+
+            if (!string.IsNullOrEmpty(searchParams.EstablishmentStatus))
+            {
+                query.Match(x => x.EstablishmentStatus == searchParams.EstablishmentStatus);
+            }
+
+            query.PageNumber(searchParams.PageNumber);
+            query.PageSize(searchParams.PageSize);
+
             var queryResult = await query.ExecuteAsync();
 
             result.Results = queryResult.Results.ToList().AsReadOnly();
@@ -39,5 +78,50 @@ public class SearchRepository : ISearchRepository
         return result;
     }
 
+    private void CustomizeQuery(SearchParams searchParams, ref PagedSearch<Rating, Rating> query)
+    {
+        if (!string.IsNullOrEmpty(searchParams.searchTerm))
+        {
+            query.Match(Search.Full, searchParams.searchTerm).SortByTextScore();
+        }
 
+        query = searchParams.OrderBy switch
+        {
+            "EstablishmentName" => query.Sort(x => x.Ascending(x => x.EstablishmentName)),
+            "Username" => query.Sort(x => x.Ascending(x => x.Username)),
+            "EstablishmentTypeName" => query.Sort(x => x.Ascending(x => x.EstablishmentTypeName)),
+            _ => query.Sort(x => x.Ascending(x => x.FlaggedOn))
+        };
+
+        query = searchParams.FilterBy switch
+        {
+            "Color" => query.Match(x => x.Color == "Yellow"),
+            "LimitResult" => query.Match(x => x.FlaggedOn > DateTime.UtcNow.AddDays(-7)),
+            _ => query.Match(x => x.FlaggedOn < DateTime.UtcNow)
+        };
+
+        if (!string.IsNullOrEmpty(searchParams.Username))
+        {
+            query.Match(x => x.Username == searchParams.Username);
+        }
+
+        if (!string.IsNullOrEmpty(searchParams.EstablishmentName))
+        {
+            query.Match(x => x.EstablishmentName == searchParams.EstablishmentName);
+        }
+
+        if (!string.IsNullOrEmpty(searchParams.EstablishmentTypeName))
+        {
+            query.Match(x => x.EstablishmentTypeName == searchParams.EstablishmentTypeName);
+        }
+
+
+        if (!string.IsNullOrEmpty(searchParams.EstablishmentStatus))
+        {
+            query.Match(x => x.EstablishmentStatus == searchParams.EstablishmentStatus);
+        }
+
+        query.PageNumber(searchParams.PageNumber);
+        query.PageSize(searchParams.PageSize);
+    }
 }

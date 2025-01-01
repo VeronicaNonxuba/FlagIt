@@ -1,9 +1,9 @@
 using SearchService.Models;
+using SearchService.RequestHelpers;
 
 namespace SearchService.Data;
 
 public interface ISearchRepository
 {
-    Task<QueryResponse> SearchItems(string searchTerm,
-    int pageSize = 3, int pageNumber = 1);
+    Task<QueryResponse> SearchItems(SearchParams searchParams);
 }

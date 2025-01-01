@@ -22,7 +22,6 @@ public class Rating : Entity
     public string? Owner { get; set; }
     public string? Address { get; set; }
     public string? EstablishmentStatus { get; set; }
-    public string? EstablishmentStatusString { get; set; }
     public string? EstablishmentName { get; set; }
     public string? EstablishmentTypeName { get; set; }
 }

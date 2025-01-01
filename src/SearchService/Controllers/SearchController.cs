@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SearchService.Data;
+using SearchService.RequestHelpers;
 
 namespace SearchService.Controllers;
 
@@ -13,9 +14,13 @@ public class SearchController : ControllerBase
         _searchRepository = searchRepository;
     }
     [HttpGet]
-    public async Task<ActionResult> SearchItems(string searchTerm)
+    public async Task<ActionResult> SearchItems([FromQuery] SearchParams searchParams)
     {
-        var result = await _searchRepository.SearchItems(searchTerm);
+        if (searchParams == null)
+        {
+            return BadRequest("Search parameters are required");
+        }
+        var result = await _searchRepository.SearchItems(searchParams);
         return Ok(result);
     }
 }
