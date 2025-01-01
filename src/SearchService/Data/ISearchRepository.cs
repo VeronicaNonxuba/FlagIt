@@ -4,5 +4,6 @@ namespace SearchService.Data;
 
 public interface ISearchRepository
 {
-    Task<IEnumerable<Rating>> SearchItems(string searchTerm);
+    Task<QueryResponse> SearchItems(string searchTerm,
+    int pageSize = 3, int pageNumber = 1);
 }

@@ -11,12 +11,26 @@ public class SearchRepository : ISearchRepository
     {
         _mapper = mapper;
     }
-    public Task<IEnumerable<Rating>> SearchItems(string searchTerm)
+    public async Task<QueryResponse> SearchItems(string searchTerm,
+    int pageSize = 3, int pageNumber = 1)
     {
-        Task<IEnumerable<Rating>> result = Task.FromResult(Enumerable.Empty<Rating>());
+        QueryResponse result = new QueryResponse();
         try
         {
-            //var query = DB.
+            var query = DB.PagedSearch<Rating>();
+            query.Sort(x => x.Ascending(x => x.EstablishmentName));
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query.Match(Search.Full, searchTerm).SortByTextScore();
+            }
+            query.PageNumber(pageNumber);
+            query.PageSize(pageSize);
+            var queryResult = await query.ExecuteAsync();
+
+            result.Results = queryResult.Results.ToList().AsReadOnly();
+            result.TotalCount = queryResult.TotalCount;
+            result.PageCount = queryResult.PageCount;
         }
         catch (Exception ex)
         {
@@ -24,4 +38,6 @@ public class SearchRepository : ISearchRepository
         }
         return result;
     }
+
+
 }
