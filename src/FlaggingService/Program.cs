@@ -1,5 +1,8 @@
 
 using FlaggingService.Data;
+using FlaggingService.Data.Establishments;
+using FlaggingService.Data.Flags;
+using FlaggingService.Data.Users;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +14,10 @@ builder.Services.AddDbContext<FlaggingDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IFlaggingRepository, FlaggingRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IFlagRepository, FlagRepository>();
+builder.Services.AddScoped<IEstablishmentRepository, EstablishmentRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((context, cfg) =>

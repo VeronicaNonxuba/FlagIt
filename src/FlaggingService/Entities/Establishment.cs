@@ -31,6 +31,6 @@ public class Establishment
 
     public ICollection<Contact>? Contact { get; set; }
 
-    public ICollection<Flagging>? Flagging { get; set; }
+    public ICollection<Rating>? Rating { get; set; }
 
 }

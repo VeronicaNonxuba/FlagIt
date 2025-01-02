@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlaggingService.Entities;
 [Table("Users")]
-public class Flagger
+public class User
 {
     [Key]
     public Guid Id { get; set; }
@@ -19,5 +19,5 @@ public class Flagger
     public int FlagCount { get; set; }
 
     //nav props
-    public ICollection<Flagging>? Flagging { get; set; }
+    public ICollection<Rating>? Rating { get; set; }
 }

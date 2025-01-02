@@ -21,5 +21,5 @@ public class Flag
     public bool IsDeleted { get; set; } = false;
 
     //nav props
-    public ICollection<Flagging>? Flagging { get; set; }
+    public ICollection<Rating>? Rating { get; set; }
 }

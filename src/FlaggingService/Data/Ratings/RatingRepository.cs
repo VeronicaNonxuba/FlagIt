@@ -1,15 +1,16 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FlaggingService.RequestHelpers;
 
 
 namespace FlaggingService.Data;
 
-public class FlaggingRepository : IFlaggingRepository
+public class RatingRepository : IRatingRepository
 {
     private readonly IMapper _mapper;
     private readonly FlaggingDbContext _context;
 
-    public FlaggingRepository(IMapper mapper, FlaggingDbContext context)
+    public RatingRepository(IMapper mapper, FlaggingDbContext context)
     {
         _mapper = mapper;
         _context = context;
@@ -20,20 +21,20 @@ public class FlaggingRepository : IFlaggingRepository
         throw new NotImplementedException();
     }
 
-    public async Task<int> FlagAnEstablishment(CreateFlagDto request)
+    public async Task<int> FlagAnEstablishment(Rating request)
     {
-        var requestObj = _mapper.Map<Flagging>(request);
-        _context.Flagging.Add(requestObj);
+        var requestObj = _mapper.Map<Rating>(request);
+        _context.Ratings.Add(requestObj);
         return await _context.SaveChangesAsync();
     }
 
     public async Task<FlaggingDto> GetFlaggingDtoById(Guid estId, Guid flagId, Guid flaggerId)
     {
         //fetch the entity first, make sure to fetch the navigation properties too (using include)
-        var result = await _context.Flagging
+        var result = await _context.Ratings
                         .Include(f => f.Flag)
                         .Include(e => e.Establishment)
-                        .Include(fl => fl.Flagger)
+                        .Include(fl => fl.User)
                         .Where(x => x.FlaggedOn.CompareTo(DateTime.Now.AddDays(-1)) > 0)
                         .FirstOrDefaultAsync(f => f.EstablishmentId == estId
                                    && f.FlagId == flagId
@@ -47,16 +48,34 @@ public class FlaggingRepository : IFlaggingRepository
         return flaggingDto;
     }
 
-    public Task<FlaggingDto> GetFlaggingDtoById(RequestItem requestObj)
+    public async Task<FlaggingDto> GetFlaggingDtoById(RequestItem requestObj)
     {
-        throw new NotImplementedException();
+        var query = _context.Ratings
+            .Include(x => x.Flag)
+            .Include(y => y.User)
+            .Include(z => z.Establishment)
+            .OrderBy(n => n.FlagId)
+            .OrderBy(n => n.EstablishmentId)
+            .AsQueryable();
+
+        query = query.Where(x => x.FlaggedOn.CompareTo(Helper.ConvertToUtc(requestObj.FlaggedOn).ToUniversalTime()) > 0);
+        query = query.Where(x => x.EstablishmentId == requestObj.EstablishmentId);
+        query = query.Where(x => x.FlagId == requestObj.FlagId);
+        query = query.Where(x => x.FlaggedBy == requestObj.UserId);
+
+        var result = await query.ProjectTo<FlaggingDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+        if (result == null)
+        {
+            throw new Exception("Flagging not found");
+        }
+        return result;
     }
 
     public async Task<List<FlaggingDto>> GetFlaggings(string? date)
     {
-        var query = _context.Flagging
+        var query = _context.Ratings
             .Include(x => x.Flag)
-            .Include(y => y.Flagger)
+            .Include(y => y.User)
             .Include(z => z.Establishment)
             .OrderBy(n => n.FlagId)
             .OrderBy(n => n.EstablishmentId)

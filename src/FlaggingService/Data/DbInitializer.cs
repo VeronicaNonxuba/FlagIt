@@ -17,16 +17,16 @@ public class DbInitializer
 
         if (context != null)
         {
-            if (context.Flagging.Any())
+            if (context.Ratings.Any())
             {
                 Console.WriteLine("Aleady have data - no need to seed");
                 return;
             }
-            SeedFlaggerData(context);
+            SeedUserData(context);
             SeedFlagData(context);
             SeedEstablishmentTypeData(context);
             SeedEstablishmentData(context);
-            SeedFlaggingData(context);
+            SeedRatingData(context);
         }
     }
 
@@ -106,22 +106,28 @@ public class DbInitializer
         context.SaveChanges();
     }
 
-    private static void SeedFlaggerData(FlaggingDbContext context)
+    private static void SeedUserData(FlaggingDbContext context)
     {
-        var users = new List<Flagger>()
+        var users = new List<User>()
         {
             // Add your seed data here
-            new Flagger
+            new User
             {
                Id = Guid.Parse("2c912e86-72a0-4718-aa41-128ac771d954"),
                CreatedOn = DateTime.UtcNow.AddDays(-2),
                Username = "VeronicaN"
             },
-            new Flagger
+            new User
             {
                Id = Guid.Parse("7923de37-799f-4d62-b47e-f82bcb4066d0"),
                Username = "KhungileN",
                CreatedOn = DateTime.UtcNow.AddDays(-1)
+            },
+            new User
+            {
+               Id = Guid.Parse("4e17c510-2c2e-48b0-993e-2c27cc78d2d3"),
+               Username = "PalesaN",
+               CreatedOn = DateTime.UtcNow.AddDays(-8)
             }
         };
 
@@ -172,12 +178,12 @@ public class DbInitializer
         context.SaveChanges();
     }
 
-    private static void SeedFlaggingData(FlaggingDbContext context)
+    private static void SeedRatingData(FlaggingDbContext context)
     {
-        var flaggings = new List<Flagging>()
+        var flaggings = new List<Rating>()
         {
             // Add your seed data here
-            new Flagging
+            new Rating
             {
                FlagId = Guid.Parse("3efb5209-a1f3-460b-bbad-3d1e024e6be1"),
                EstablishmentId = Guid.Parse("efe24fe5-b6e4-45e6-917a-73125daa58df"),
@@ -187,7 +193,7 @@ public class DbInitializer
             }
         };
 
-        context.Flagging.AddRange(flaggings);
+        context.Ratings.AddRange(flaggings);
         context.SaveChanges();
     }
 }

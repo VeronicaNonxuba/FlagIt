@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlaggingService.Entities;
 
-public class Flagging
+public class Rating
 {
     [ForeignKey("Flag")]
     public Guid FlagId { get; set; }
@@ -22,7 +22,7 @@ public class Flagging
 
     //navigation properties
     [Required]
-    public Flagger? Flagger { get; set; }
+    public User? User { get; set; }
 
     [Required]
     public Flag? Flag { get; set; }

@@ -8,30 +8,30 @@ public class FlaggingDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<EstablishmentType> EstablishmentType { get; set; }
     public DbSet<Establishment> Establishments { get; set; }
     public DbSet<Flag> Flags { get; set; }
-    public DbSet<Flagger> Users { get; set; }
-    public DbSet<Flagging> Flagging { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Flagging>()
-            .HasKey(flagging => new { flagging.FlagId, flagging.EstablishmentId, flagging.FlaggedBy });
-        modelBuilder.Entity<Flagging>()
-            .HasIndex(flagging => new { flagging.FlagId, flagging.EstablishmentId, flagging.FlaggedBy });
-        modelBuilder.Entity<Flagging>()
-            .HasOne(f => f.Flagger)
-            .WithMany(flagger => flagger.Flagging)
+        modelBuilder.Entity<Rating>()
+            .HasKey(rating => new { rating.FlagId, rating.EstablishmentId, rating.FlaggedBy, rating.FlaggedOn });
+        modelBuilder.Entity<Rating>()
+            .HasIndex(rating => new { rating.FlagId, rating.EstablishmentId, rating.FlaggedBy, rating.FlaggedOn });
+        modelBuilder.Entity<Rating>()
+            .HasOne(f => f.User)
+            .WithMany(user => user.Rating)
             .HasForeignKey(f => f.FlaggedBy)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Flagging>()
+        modelBuilder.Entity<Rating>()
             .HasOne(f => f.Establishment)
-            .WithMany(e => e.Flagging)
+            .WithMany(e => e.Rating)
             .HasForeignKey(f => f.EstablishmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Flagging>()
+        modelBuilder.Entity<Rating>()
             .HasOne(f => f.Flag)
-            .WithMany(flag => flag.Flagging)
+            .WithMany(flag => flag.Rating)
             .HasForeignKey(f => f.FlagId)
             .OnDelete(DeleteBehavior.Restrict);
 
