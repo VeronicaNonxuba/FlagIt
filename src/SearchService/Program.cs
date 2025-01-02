@@ -1,3 +1,5 @@
+using MassTransit;
+using SearchService.Consumers;
 using SearchService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumersFromNamespaceContaining<RatingCreatedConsumer>();
+
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

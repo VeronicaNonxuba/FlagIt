@@ -14,16 +14,16 @@ public class SearchRepository : ISearchRepository
     }
     public async Task<QueryResponse> SearchItems(SearchParams searchParams)
     {
-        QueryResponse result = new QueryResponse();
+        QueryResponse result = new();
         try
         {
             var query = DB.PagedSearch<Rating, Rating>();
 
             //CustomizeQuery(searchParams, ref query);
 
-            if (!string.IsNullOrEmpty(searchParams.searchTerm))
+            if (!string.IsNullOrEmpty(searchParams.SearchTerm))
             {
-                query.Match(Search.Full, searchParams.searchTerm).SortByTextScore();
+                query.Match(Search.Full, searchParams.SearchTerm).SortByTextScore();
             }
 
             query = searchParams.OrderBy switch
@@ -56,7 +56,6 @@ public class SearchRepository : ISearchRepository
                 query.Match(x => x.EstablishmentTypeName == searchParams.EstablishmentTypeName);
             }
 
-
             if (!string.IsNullOrEmpty(searchParams.EstablishmentStatus))
             {
                 query.Match(x => x.EstablishmentStatus == searchParams.EstablishmentStatus);
@@ -80,9 +79,9 @@ public class SearchRepository : ISearchRepository
 
     private void CustomizeQuery(SearchParams searchParams, ref PagedSearch<Rating, Rating> query)
     {
-        if (!string.IsNullOrEmpty(searchParams.searchTerm))
+        if (!string.IsNullOrEmpty(searchParams.SearchTerm))
         {
-            query.Match(Search.Full, searchParams.searchTerm).SortByTextScore();
+            query.Match(Search.Full, searchParams.SearchTerm).SortByTextScore();
         }
 
         query = searchParams.OrderBy switch
