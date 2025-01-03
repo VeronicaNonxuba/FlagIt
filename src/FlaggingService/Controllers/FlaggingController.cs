@@ -57,7 +57,14 @@ public class FlaggingController : ControllerBase
     {
         try
         {
+            //1. Prepare request
             var rating = await PrepareRequest(request);
+
+            //2. Map to DTO
+            var newRating = _mapper.Map<FlaggingDto>(rating);
+
+            //3. Publish event
+            await _publishEndpoint.Publish(_mapper.Map<RatingCreated>(newRating));
 
             //4. Save to database
             var response = await _ratingRepository.FlagAnEstablishment(rating) > 0;
@@ -65,12 +72,7 @@ public class FlaggingController : ControllerBase
             //5. Return error if save failed
             if (!response) return BadRequest("Could not save changes to the database");
 
-            //6. Map to DTO
-            var newRating = _mapper.Map<FlaggingDto>(rating);
-
-            //6. Publish event
-            await _publishEndpoint.Publish(_mapper.Map<RatingCreated>(newRating));
-
+            #region Commented out - having issues with the CreatedAtAction method
             // //7. Return created response
             // return CreatedAtAction(nameof(GetFlaggedEstablishment),
             //     new
@@ -81,6 +83,8 @@ public class FlaggingController : ControllerBase
             //         flaggedOn = newRating.FlaggedOn
             //     },
             //     newRating);
+            #endregion
+
             return Ok(newRating.EstablishmentId);
         }
         catch (ArgumentException ex)
@@ -96,16 +100,18 @@ public class FlaggingController : ControllerBase
     private async Task<Rating> PrepareRequest(CreateFlagDto request)
     {
         // 1. Fetch related entities
-        var flag = await _flagRepository.GetFlagById(request.FlagId);
-        if (flag is null) throw new ArgumentException("Invalid FlagId");
-        var establishment = await _establishmentRepository.GetEstablishmentById(request.EstablishmentId);
-        if (establishment is null) throw new ArgumentException("Invalid EstablishmentId");
-        var user = await _usersRepository.GetUserById(request.FlaggedBy);
-        if (user is null) throw new ArgumentException("Invalid FlaggerId");
+        var flag = await _flagRepository.GetFlagById(request.FlagId) ??
+                    throw new ArgumentException("Invalid FlagId");
+        var establishment = await _establishmentRepository.GetEstablishmentById(request.EstablishmentId) ??
+                    throw new ArgumentException("Invalid EstablishmentId");
+        var user = await _usersRepository.GetUserById(request.FlaggedBy) ??
+                    throw new ArgumentException("Invalid FlaggerId");
 
         //2. Convert DateTime to UTC
         var flaggedOnUtc = Helper.ConvertToUtc(DateTime.Now);
-        var modifiedOnUtc = request.ModifiedOn.HasValue ? Helper.ConvertToUtc(request.ModifiedOn.Value) : (DateTime?)null;
+        var modifiedOnUtc = request.ModifiedOn.HasValue ?
+                            Helper.ConvertToUtc(request.ModifiedOn.Value)
+                            : (DateTime?)null;
 
         //3. Map to entity
         var rating = _mapper.Map<Rating>(request);

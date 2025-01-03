@@ -15,7 +15,7 @@ public class RatingCreatedConsumer : IConsumer<RatingCreated>
     }
     public async Task Consume(ConsumeContext<RatingCreated> context)
     {
-        Console.WriteLine("--> Consuming rating created: " + context.Message.EstablishmentId);
+        Console.WriteLine("--> Consuming rating created for establishment with Id: " + context.Message.EstablishmentId);
 
         var rating = _mapper.Map<Rating>(context.Message);
 
