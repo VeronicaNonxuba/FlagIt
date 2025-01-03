@@ -1,4 +1,5 @@
 using FlaggingService.Entities;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlaggingService.Data;
@@ -38,6 +39,10 @@ public class FlaggingDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Establishment>()
             .HasIndex(e => e.Name)
             .IsUnique();
+
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
     }
 
 }

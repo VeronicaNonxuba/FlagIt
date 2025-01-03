@@ -20,6 +20,13 @@ builder.Services.AddScoped<IEstablishmentRepository, EstablishmentRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddMassTransit(x =>
 {
+    x.AddEntityFrameworkOutbox<FlaggingDbContext>(c =>
+    {
+        c.QueryDelay = TimeSpan.FromSeconds(10);
+        c.UsePostgres();
+        c.UseBusOutbox();
+    });
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);

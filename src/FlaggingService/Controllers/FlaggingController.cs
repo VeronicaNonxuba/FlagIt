@@ -53,7 +53,7 @@ public class FlaggingController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<FlaggingDto>> FlagAnEstablishment([FromBody] CreateFlagDto request)
+    public async Task<ActionResult<Guid>> FlagAnEstablishment([FromBody] CreateFlagDto request)
     {
         try
         {
@@ -71,16 +71,17 @@ public class FlaggingController : ControllerBase
             //6. Publish event
             await _publishEndpoint.Publish(_mapper.Map<RatingCreated>(newRating));
 
-            //7. Return created response
-            return CreatedAtAction(nameof(GetFlaggedEstablishment),
-                new
-                {
-                    estId = newRating.EstablishmentId,
-                    flaggedBy = newRating.FlaggedBy,
-                    flagId = newRating.FlagId,
-                    flaggedOn = newRating.FlaggedOn
-                },
-                newRating);
+            // //7. Return created response
+            // return CreatedAtAction(nameof(GetFlaggedEstablishment),
+            //     new
+            //     {
+            //         estId = newRating.EstablishmentId,
+            //         flaggedBy = newRating.FlaggedBy,
+            //         flagId = newRating.FlagId,
+            //         flaggedOn = newRating.FlaggedOn
+            //     },
+            //     newRating);
+            return Ok(newRating.EstablishmentId);
         }
         catch (ArgumentException ex)
         {
