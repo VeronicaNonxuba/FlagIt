@@ -2,9 +2,9 @@ namespace FlaggingService.Data;
 
 public interface IRatingRepository
 {
-    Task<List<FlaggingDto>> GetFlaggings(string? date);
+    Task<List<FlaggingDto>> GetRatings(string? date);
     Task<FlaggingDto> GetFlaggingDtoById(RequestItem requestObj);
     Task<int> FlagAnEstablishment(Rating flagEntry);
-    Task DeleteFlaggingEntry(RequestItem requestObj);
+    Task<int> DeleteRatingEntry(RequestItem requestObj);
 
 }

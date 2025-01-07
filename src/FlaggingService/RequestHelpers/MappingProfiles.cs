@@ -1,7 +1,5 @@
 using AutoMapper;
 using Contracts;
-using FlaggingService.DTOs;
-using FlaggingService.Entities;
 
 namespace FlaggingService.RequestHelpers;
 
@@ -23,5 +21,6 @@ public class MappingProfiles : Profile
 
         CreateMap<FlaggingDto, RatingCreated>();
         CreateMap<CreateFlagDto, Rating>();
+        CreateMap<Rating, RatingUpdated>();
     }
 }

@@ -24,4 +24,5 @@ public class Rating : Entity
     public string? EstablishmentStatus { get; set; }
     public string? EstablishmentName { get; set; }
     public string? EstablishmentTypeName { get; set; }
+    public bool IsDeleted { get; set; }
 }

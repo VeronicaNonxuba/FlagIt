@@ -19,20 +19,5 @@ public class DbInitializer
             .Key(x => x.EstablishmentTypeName, KeyType.Text)
             .Key(x => x.FlaggedBy, KeyType.Text)
             .CreateAsync();
-
-        // var count = await DB.CountAsync<Rating>();
-        // if (count == 0)
-        // {
-        //     Console.WriteLine("Seeding database...");
-        //     var itemData = await File.ReadAllTextAsync("Data/Ratings.json");
-
-        //     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        //     var items = JsonSerializer.Deserialize<List<Rating>>(itemData, options);
-        //     if (items != null)
-        //     {
-        //         await DB.SaveAsync(items);
-        //     }
-        //     Console.WriteLine("Database seeded.");
-        // }
     }
 }

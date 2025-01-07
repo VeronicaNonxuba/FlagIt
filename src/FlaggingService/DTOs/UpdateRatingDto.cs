@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FlaggingService.DTOs;
 
-public class UpdateFlaggingDto
+public class UpdateRatingDto
 {
     [Required]
     public Guid FlagId { get; set; }
@@ -14,8 +14,12 @@ public class UpdateFlaggingDto
     public Guid FlaggedBy { get; set; }
 
     [Required]
+    public DateTime FlaggedOn { get; set; }
+
     public string? Comments { get; set; }
 
-    [Required]
-    public int FlagCount { get; set; }
+    public int? FlagCount { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public bool IsDeleted { get; set; }
 }
