@@ -4,7 +4,6 @@ using FlaggingService.Data.Establishments;
 using FlaggingService.Data.Flags;
 using FlaggingService.Data.Users;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
